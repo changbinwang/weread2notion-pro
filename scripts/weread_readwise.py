@@ -136,5 +136,4 @@ if __name__ == "__main__":
                         "category": "books",
                         }]
                     }
-                print(json)
                 create_highlight_with_auto_retry(readwise_token,json)
