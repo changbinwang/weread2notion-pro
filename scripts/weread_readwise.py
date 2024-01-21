@@ -69,31 +69,6 @@ def download_image(url, save_dir="cover"):
     return save_path
 
 
-
-
-
-
-def content_to_block(content):
-    if "bookmarkId" in content:
-        return get_callout(
-            content.get("markText"),
-            content.get("style"),
-            content.get("colorStyle"),
-            content.get("reviewId"),
-        )
-    elif "reviewId" in content:
-        return get_callout(
-            content.get("content"),
-            content.get("style"),
-            content.get("colorStyle"),
-            content.get("reviewId"),
-        )
-    else:
-        return get_heading(content.get("level"), content.get("title"))
-
-
-
-
 def create_highlight_with_auto_retry(token, highlight_data, max_retries=5, retry_interval=60):
     url = "https://readwise.io/api/v2/highlights/"
     headers = {"Authorization": f"Token {token}"}
@@ -148,7 +123,6 @@ if __name__ == "__main__":
             if categories != None:
                 categories = [x["title"] for x in categories]
             print(f"正在同步《{title}》,一共{len(books)}本，当前是第{index+1}本。")
-            isbn, rating = weread_api.get_bookinfo(bookId)
             bookmarks = weread_api.get_bookmark_list(bookId)
             for i in bookmarks:
                 highlighted_at_time = datetime.utcfromtimestamp(i.get("createTime"))
@@ -160,9 +134,7 @@ if __name__ == "__main__":
                         "image_url": cover,
                         "source_type": "weread",
                         "category": "books",
-                        "location_type": "order",
-                        "location": i.get("range"),
-                        "highlighted_at": highlighted_at_time.isoformat(),
                         }]
                     }
+                print(json)
                 create_highlight_with_auto_retry(readwise_token,json)
